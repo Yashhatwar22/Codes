@@ -1,0 +1,31 @@
+ vector<int> kmp(string pattern, string str) {
+    int m = pattern.length();
+    int n = str.length();
+    vector<int> v;
+
+    pattern = ' ' + pattern; // just shifting the pattern indices by 1
+    vector<int> piTable(m + 1, 0);
+
+    // Building the prefix table (piTable)
+    for (int i = 2, j = 0; i <= m; i++) {
+        while (j > 0 && pattern[j + 1] != pattern[i])
+            j = piTable[j];
+        if (pattern[j + 1] == pattern[i])
+            j++;
+        piTable[i] = j;
+    }
+
+    // Performing pattern matching
+    for (int i = 0, j = 0; i < n; i++) {
+        while (j > 0 && pattern[j + 1] != str[i])
+            j = piTable[j];
+        if (pattern[j + 1] == str[i])
+            j++;
+        if (j == m) {
+            v.push_back(i - m + 2);
+            j = piTable[j];
+        }
+    }
+
+    return v;
+}
